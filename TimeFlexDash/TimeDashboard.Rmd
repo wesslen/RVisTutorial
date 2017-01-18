@@ -1,0 +1,83 @@
+---
+title: "Charlotte Tweets"
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source: embed
+---
+
+
+```{r setup, include=FALSE}
+library(flexdashboard); library("readr"); library("dplyr"); library("lubridate"); library("streamgraph"); library("htmlwidgets");  library(xts); library(lubridate); library(dygraphs); library(reshape2)
+
+#tweets <- read.csv("./CLT_beer_tweets.csv", stringsAsFactors = F)
+tweets <- read.csv("./CharlotteTweets20Sample.csv", stringsAsFactors = F)
+
+#tweets$text <- iconv(tweets$text, "latin1", "ASCII", sub="")
+
+# Read my tweets
+tweets_df <- tweets %>%
+  select(postedTime, body) %>%
+  mutate(text = tolower(body))
+
+# Pick hashtags with regexp
+hashtags_list <- regmatches(tweets_df$text, gregexpr("#[[:alnum:]]+", tweets_df$text))
+
+# Create a new data_frame with (timestamp, hashtag) -pairs
+hashtags_df <- data_frame()
+for (i in which(sapply(hashtags_list, length) > 0)) {
+  hashtags_df <-
+    bind_rows(hashtags_df,
+              data_frame(
+                timestamp = paste0(substr(tweets_df$postedTime[i], 1, 10), " 00:00:00 EDT"),
+                hashtag = hashtags_list[[i]]
+              ))
+}
+
+# Process data for plotting
+hashtags_df <- hashtags_df %>%
+  # Pick top 10 hashtags
+  filter(hashtag %in% names(sort(table(hashtag), decreasing=TRUE))[1:10]) %>%
+  # Group by day
+  mutate(day = as.Date(timestamp)) %>%
+  group_by(day, hashtag) %>%
+  summarise(value = n())
+```
+
+### Dygraphs: Line graphs for time series {data-height=500}
+
+```{r}
+tweets$estTime <- ymd_hms(tweets$postedTime, tz = "EDT")
+
+agg.time <- tweets %>% group_by(estTime, geo.type) %>% summarise(Count = n())
+agg.time$estTime <- strptime(agg.time$estTime, "%Y-%m-%d")
+
+aqm <- melt(agg.time, id=c("estTime","geo.type"), measure.vars = c("Count"), na.rm=TRUE)
+count <- dcast(aqm, estTime ~ geo.type, fun.aggregate = sum)
+count$estTime <- with_tz(count$estTime, tz = "EDT")
+
+tweet.time <- xts(
+  x = count[,2:3],
+  order.by = count$estTime,
+  tz = "EDT"
+)
+
+ dygraph(tweet.time,  main = "Tweet Counts") %>%
+    dyOptions(colors = RColorBrewer::brewer.pal(3, "Dark2"), includeZero = TRUE) %>%
+    dyAxis("x", drawGrid = FALSE) %>%
+    dyAxis("y", label = "Tweet Count") 
+```
+
+
+### Streamgraph: What are the top hashtags? {data-height=500}
+
+```{r}
+# Create streamgraph
+sg <- streamgraph(data = hashtags_df, key = "hashtag", value = "value", date = "day",
+                  offset = "silhouette", interpolate = "cardinal", scale = "date") %>%
+        sg_legend(TRUE, "hashtag: ")
+
+sg
+
+```
+

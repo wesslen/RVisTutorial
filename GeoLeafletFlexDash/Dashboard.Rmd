@@ -1,0 +1,119 @@
+---
+title: "Charlotte Beer Tweets - Leaflet Demo"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    social: menu
+    source: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard); library(leaflet); library(htmltools); library(KernSmooth); library(sp)
+
+tweets <- read.csv("./CLT_beer_tweets.csv", stringsAsFactors = F)
+#tweets <- read.csv("./CharlotteTweets20Sample.csv", stringsAsFactors = F)
+
+points <- subset(tweets, !is.na(point_long))
+```
+
+### Leaflet Demo: Simple plot with only points.
+
+```{r}
+leaflet(points) %>%
+  addTiles() %>%
+  addCircleMarkers(lng=points$point_long, lat=points$point_lat)
+
+```
+
+***
+
+What area of Charlotte tweets the most about beer?
+
+- Uses [Leaflet](https://rstudio.github.io/leaflet/) to map the points
+
+
+### Point enhancements: Adjust size, opacity and add in pop-ups of tweet text
+
+```{r}
+leaflet(points) %>%
+  addTiles() %>%
+  addCircleMarkers(lng=points$point_long, lat=points$point_lat,   popup = points$body, #color = pal(points$generator),
+             stroke = FALSE, fillOpacity = 0.5, radius = 4
+             )
+
+```
+
+***
+
+Enhancements
+
+- Adds in pop-ups to display the body of the tweet
+
+- Removes Stroke and creates 50% opacity
+
+- Changes the radius to 4
+
+
+
+### Add in a contour map
+
+```{r}
+
+## MAKE CONTOUR LINES
+## Note, bandwidth choice is based on MASS::bandwidth.nrd()
+kde <- bkde2D(points[ , c("point_long", "point_lat")],
+              bandwidth=c(.0038, .0058), gridsize = c(100,100))
+CL <- contourLines(kde$x1 , kde$x2 , kde$fhat)
+
+## EXTRACT CONTOUR LINE LEVELS
+LEVS <- as.factor(sapply(CL, `[[`, "level"))
+NLEV <- length(levels(LEVS))
+
+## CONVERT CONTOUR LINES TO POLYGONS
+pgons <- lapply(1:length(CL), function(i)
+    Polygons(list(Polygon(cbind(CL[[i]]$x, CL[[i]]$y))), ID=i))
+spgons = SpatialPolygons(pgons)
+
+
+leaflet(spgons) %>%
+  addTiles() %>%
+  addPolygons(color = heat.colors(NLEV, NULL)[LEVS]) %>%
+  addCircleMarkers(lng=points$point_long, lat=points$point_lat,   popup = points$body, #color = pal(points$generator),
+             stroke = FALSE, fillOpacity = 0.5, radius = 4
+             )
+```
+
+***
+
+This step adds in a contour map (kernel density)
+
+- One problem with the points only are multiple points on a specific location (e.g., Bank of America stadium)
+
+- A contour map helps to understand the point density around a broader area.
+
+- Uptown, South End and NoDa are the most concentrated areas.
+
+- There are smaller areas in South Charlotte, Tega Cay and North Charlotte.
+
+
+
+### Add in Marker Clusters
+
+```{r}
+
+leaflet(spgons) %>%
+  addTiles() %>%
+  addPolygons(color = heat.colors(NLEV, NULL)[LEVS]) %>%
+  addCircleMarkers(lng=points$point_long, lat=points$point_lat,   popup = points$body, #color = pal(points$generator),
+             stroke = FALSE, fillOpacity = 0.5, radius = 10, clusterOptions = markerClusterOptions()
+             )
+```
+
+***
+
+Enhancement
+
+- Adds in the markerCluster option
+
+
+

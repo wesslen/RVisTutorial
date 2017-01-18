@@ -1,0 +1,76 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard); library(dplyr); library(igraph); library(visNetwork)
+#tweets <- read.csv("~/Dropbox (UNC Charlotte)/NCGOP/SenateTweets.csv", stringsAsFactors = F)
+#xx <- subset(tweets, replyToSN != "")
+
+#setwd("~/Dropbox (UNC Charlotte)/ProtestPRPaper/Data")
+
+ttweets <- read.csv("./all-astrotweets.csv", stringsAsFactors = F)
+
+xx <- subset(ttweets, user_mention_screen_names != "" & verb == "post")
+
+y <- xx %>% group_by(preferredUsername) %>% summarise(Count=n(),Types=n_distinct(type))
+
+adjlist <- strsplit(paste0(xx$preferredUsername,",",xx$user_mention_screen_names), ",")
+edgelist <- cbind(
+    unlist(lapply(adjlist, tail, -1L)),                        # col1
+    rep(sapply(adjlist, `[`, 1L), times=lengths(adjlist)-1L)   # col2
+)
+colnames(edgelist) <- c("to","from")
+
+edgelist <- as.data.frame(edgelist, stringsAsFactors = F)
+
+edges <- data.frame(from=edgelist$from, to=edgelist$to)
+
+edges <- data.frame(from=xx$screenName, to=xx$replyToSN)
+
+g <- graph_from_data_frame(d = edges, directed = T)
+
+
+# library(visNetwork)
+vg <- toVisNetworkData(g, idToLabel = TRUE)
+
+#vg
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+visIgraph(g)
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+ttweets$aclu <- grepl("https://action.aclu.org/secure/stop-police-killing-communities?", ttweets$urls.0.expanded_url)
+ttweets$colorchange <- grepl("http://act.colorofchange.org/sign/nc-bodycams-keith-scott/?", ttweets$urls.0.expanded_url)
+ttweets$momsrising <- grepl("http://action.momsrising.org/sign/scott-crutcher-police-shootings?", ttweets$urls.0.expanded_url)
+
+
+xx <- ttweets %>% group_by(actor.id) %>% summarise(ACLU = max(aclu), ColorChange = max(colorchange), MomsRising = max(momsrising))
+
+xx$total <- xx$ACLU + xx$ColorChange + xx$MomsRising
+
+#visNetwork(nodes = vg$nodes, edges = vg$edges)
+```
+
+### Chart C
+
+```{r}
+
+```
+
