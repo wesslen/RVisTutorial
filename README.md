@@ -5,10 +5,36 @@
 2.  Ensure you have R and R Studio installed on your machine. Open R Studio and run the following command to ensure you have all of the R libraries:
 
 ```{r}
-packages <- c("flexdashboard","readr","dplyr","lubridate","htmlwidgets","htmltools","KernSmooth","sp","devtools",
-              "xts","dygraphs","reshape2","visNetwork","igraph","leaflet")
+packages <- c("flexdashboard", "readr", "dplyr", "lubridate", "htmlwidgets", "htmltools",
+              "KernSmooth", "sp", "devtools", "xts", "dygraphs", "reshape2", "visNetwork",
+              "igraph", "leaflet")
 
 lapply(packages, install.packages(packages), character.only = TRUE)
 
 devtools::install_github("hrbrmstr/streamgraph")
 ```
+
+### Visualization Demos
+
+*   [Spatial (Leaflet) Demo](https://rpubs.com/ryanwesslen/241940)
+
+*   [Time Series Demo](https://rpubs.com/ryanwesslen/242027)
+
+*   Network Demo (TBD)
+
+
+### Links for Tools
+
+*   [RMarkdown](http://rmarkdown.rstudio.com/)
+
+*   [HTMLWidgets](http://www.htmlwidgets.org/)
+
+*   [Flexdashboard](http://rmarkdown.rstudio.com/flexdashboard/)
+
+*   [Shiny](https://shiny.rstudio.com/)
+
+### Links for publication/production
+
+*   [RPubs](https://rpubs.com/)
+
+*   [Shinyapps.io](https://www.shinyapps.io/)
