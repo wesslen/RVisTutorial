@@ -16,7 +16,9 @@ devtools::install_github("hrbrmstr/streamgraph")
 
 3.  Open up any of the demos' RMarkdown file and run.
 
-Before we get into the visualizations, [here is a terrific tutorial](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week1.pdf) on R. For users looking for a great resource on learning R as a whole, I strongly recommend Brooke Anderson's [R Programming for Research](https://github.com/geanders/RProgrammingForResearch) course GitHub repository.
+Before we get into the visualizations, we'll start with two introductory tutorials to R: [tutorial 1](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week1.pdf) and [tutorial 2](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2.pdf). 
+
+For users looking for a great resource on learning R as a whole, I strongly recommend Brooke Anderson's [R Programming for Research](https://github.com/geanders/RProgrammingForResearch) course GitHub repository.
 
 ### Visualization Demos
 
