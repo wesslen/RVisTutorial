@@ -47,3 +47,5 @@ For users looking for a great resource on learning R as a whole, I strongly reco
 *   [Winston Chang's Cookbook for R](http://www.cookbook-r.com/)
 
 *   [Dean Attali's Shiny Demos](http://deanattali.com/shiny/)
+
+*   [Dean Attali's Shiny Tutorial](http://deanattali.com/blog/building-shiny-apps-tutorial/)
