@@ -7,18 +7,16 @@
 ```{r}
 packages <- c("flexdashboard", "readr", "dplyr", "lubridate", "htmlwidgets", "htmltools",
               "KernSmooth", "sp", "devtools", "xts", "dygraphs", "reshape2", "visNetwork",
-              "igraph", "leaflet")
+              "igraph", "leaflet", "plotly", "highcharter")
 
 lapply(packages, install.packages(packages), character.only = TRUE)
 
 devtools::install_github("hrbrmstr/streamgraph")
 ```
 
-3.  Open up any of the demos' RMarkdown file and run.
+Before we get into the visualizations, we'll start with two introductory tutorials to R from Brooke Anderson's [R Programming for Research](https://github.com/geanders/RProgrammingForResearch) materials: [tutorial 1](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week1.pdf) and [tutorial 2](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2.pdf). 
 
-Before we get into the visualizations, we'll start with two introductory tutorials to R: [tutorial 1](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week1.pdf) and [tutorial 2](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2.pdf). 
-
-For users looking for a great resource on learning R as a whole, I strongly recommend Brooke Anderson's [R Programming for Research](https://github.com/geanders/RProgrammingForResearch) course GitHub repository.
+For users looking for a great resource on learning R as a whole, I strongly recommend Brooke Anderson's course GitHub repository.
 
 ### Visualization Demos
 
@@ -27,7 +25,6 @@ For users looking for a great resource on learning R as a whole, I strongly reco
 *   [Time Series Demo](https://rpubs.com/ryanwesslen/242027)
 
 *   Network Demo (TBD)
-
 
 ### Links for Tools
 
@@ -39,8 +36,14 @@ For users looking for a great resource on learning R as a whole, I strongly reco
 
 *   [Shiny](https://shiny.rstudio.com/)
 
-### Links for publication/production
+### Links for Publishing
 
 *   [RPubs](https://rpubs.com/)
 
 *   [Shinyapps.io](https://www.shinyapps.io/)
+
+### Great R References
+
+*   [Winston Chang's Cookbook for R](http://www.cookbook-r.com/)
+
+*   [Dean Attali's Shiny Demos](http://deanattali.com/shiny/)
