@@ -27,9 +27,19 @@ leaflet(points) %>%
 
 ***
 
-What area of Charlotte tweets the most about beer?
+Question: Where's the best area to get a beer in Charlotte? 
 
-- Uses [Leaflet](https://rstudio.github.io/leaflet/) to map the points
+- Let's use as a proxy the number of mentions by geotags on Twitter.
+
+- We'll use [Leaflet](https://rstudio.github.io/leaflet/) to map the tweets.
+
+- It's important to know that there are two types of geolocation tags: point and polygon (place).
+
+- Points are exact lat/long; polygons are lat/long bounding boxes for default places (e.g. Charlotte, NC).
+
+- In this exercise, we'll only look at the point Tweets.
+
+- The data is from Dec 2015 - Feb 2016.
 
 
 ### Point enhancements: Adjust size, opacity and add in pop-ups of tweet text
@@ -114,6 +124,8 @@ leaflet(spgons) %>%
 Enhancement
 
 - Adds in the markerCluster option
+
+- This allows you to interactively measure the number of tweets in an area.
 
 
 

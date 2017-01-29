@@ -2,7 +2,11 @@
 
 1.  Download the materials in this repository using the "Clone or download" button and click the "Download ZIP" link. Unzip the file locally.
 
-2.  Ensure you have R and R Studio installed on your machine. Open R Studio and run the following command to ensure you have all of the R libraries:
+2.  Ensure you have [R](http://archive.linux.duke.edu/cran/) and [R Studio](https://www.rstudio.com/products/rstudio/download/) installed on your machine. Use the links and follow the instructions to download each locally.
+
+Alternatively, you can use [RollApp](https://www.rollapp.com/) to create a free account and run R and R Studio on a cloud service. This option has more issues with saving so this is only an option if you want to avoid downloading R/R Studio locally.
+
+Open R Studio and run the following command to ensure you have all of the R libraries:
 
 ```{r}
 packages <- c("flexdashboard", "readr", "dplyr", "lubridate", "htmlwidgets", "htmltools",
@@ -24,7 +28,7 @@ For users looking for a great resource on learning R as a whole, I strongly reco
 
 *   [Time Series Demo](https://rpubs.com/ryanwesslen/242027)
 
-*   Network Demo (TBD)
+*   [Network Demo](http://rpubs.com/ryanwesslen/245435)
 
 ### Links for Tools
 

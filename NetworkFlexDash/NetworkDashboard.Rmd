@@ -1,25 +1,22 @@
 ---
-title: "Untitled"
+title: "Network Demo (VisNetwork)"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard); library(dplyr); library(igraph); library(visNetwork)
-#tweets <- read.csv("~/Dropbox (UNC Charlotte)/NCGOP/SenateTweets.csv", stringsAsFactors = F)
-#xx <- subset(tweets, replyToSN != "")
 
-#setwd("~/Dropbox (UNC Charlotte)/ProtestPRPaper/Data")
+#sample of 10,000 Hornets-related Tweets
+ttweets <- read.csv("../hornets-sample-nov2016.csv", stringsAsFactors = F)
 
-ttweets <- read.csv("./all-astrotweets.csv", stringsAsFactors = F)
+xx <- subset(ttweets, user_mention_screen_names != "")
 
-xx <- subset(ttweets, user_mention_screen_names != "" & verb == "post")
+y <- xx %>% group_by(handle) %>% summarise(Count=n(),Types=n_distinct(handle))
 
-y <- xx %>% group_by(preferredUsername) %>% summarise(Count=n(),Types=n_distinct(type))
-
-adjlist <- strsplit(paste0(xx$preferredUsername,",",xx$user_mention_screen_names), ",")
+adjlist <- strsplit(paste0(xx$handle,",",xx$user_mention_screen_names), ",")
 edgelist <- cbind(
     unlist(lapply(adjlist, tail, -1L)),                        # col1
     rep(sapply(adjlist, `[`, 1L), times=lengths(adjlist)-1L)   # col2
@@ -30,47 +27,58 @@ edgelist <- as.data.frame(edgelist, stringsAsFactors = F)
 
 edges <- data.frame(from=edgelist$from, to=edgelist$to)
 
-edges <- data.frame(from=xx$screenName, to=xx$replyToSN)
-
 g <- graph_from_data_frame(d = edges, directed = T)
 
+Totaldeg <- degree(g, mode = "total")
+Totaldeg <- Totaldeg[order(Totaldeg, decreasing = T)]
+# notice Hornets is dominating the network -- 6247
+
+g2 <- delete_vertices(g, "hornets")
 
 # library(visNetwork)
 vg <- toVisNetworkData(g, idToLabel = TRUE)
+vg2 <- toVisNetworkData(g2, idToLabel = TRUE)
 
-#vg
 ```
 
-Column {data-width=650}
+Row {data-height=400}
 -----------------------------------------------------------------------
 
-### Chart A
+### Text box
 
-```{r}
-visIgraph(g)
-```
+You can learn more about ways to customize the network from the [VisNetwork Documentation](http://datastorm-open.github.io/visNetwork/) or [Katya Ognyanova's phenomal R visualization tutorial](http://kateto.net/network-visualization).
 
-Column {data-width=350}
+Also, to improve these results, consider the following changes:
+
+* Removing peripheral nodes (i.e. not connected to the largest component)
+
+* Remove Retweets (verb == "share"). Note that non-Retweets are verb == "post". This is the formal definition from Twitter/Gnip of a Retweet, and can be slightly different than simply using "RT" in the body of the tweet.
+
+* Color the nodes based on a categorical lable (e.g. Retweets = red, Tweets = blue).
+
+* Add in a section that displays the nodes with the highest connections (in/out degree)
+
+
+Row {data-height=600}
 -----------------------------------------------------------------------
 
-### Chart B
+### Keep @hornets in the Network
 
 ```{r}
-ttweets$aclu <- grepl("https://action.aclu.org/secure/stop-police-killing-communities?", ttweets$urls.0.expanded_url)
-ttweets$colorchange <- grepl("http://act.colorofchange.org/sign/nc-bodycams-keith-scott/?", ttweets$urls.0.expanded_url)
-ttweets$momsrising <- grepl("http://action.momsrising.org/sign/scott-crutcher-police-shootings?", ttweets$urls.0.expanded_url)
+V(g)$size <- 10
 
-
-xx <- ttweets %>% group_by(actor.id) %>% summarise(ACLU = max(aclu), ColorChange = max(colorchange), MomsRising = max(momsrising))
-
-xx$total <- xx$ACLU + xx$ColorChange + xx$MomsRising
-
-#visNetwork(nodes = vg$nodes, edges = vg$edges)
+visIgraph(g) %>% 
+  visInteraction(navigationButtons = TRUE)
 ```
 
-### Chart C
+### Remove @hornets from the Network
 
 ```{r}
+V(g2)$size <- 10
+
+visIgraph(g2) %>% 
+  visInteraction(navigationButtons = TRUE)
 
 ```
+
 
