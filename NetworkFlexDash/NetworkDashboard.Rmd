@@ -9,14 +9,14 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard); library(dplyr); library(igraph); library(visNetwork)
 
-#sample of 10,000 Hornets-related Tweets
+#take 1,000 Hornets-related Tweets
 ttweets <- read.csv("../hornets-sample-nov2016.csv", stringsAsFactors = F)
 
-xx <- subset(ttweets, user_mention_screen_names != "")
+sample <- subset(ttweets[1:1000,], user_mention_screen_names != "")
 
-y <- xx %>% group_by(handle) %>% summarise(Count=n(),Types=n_distinct(handle))
+y <- sample %>% group_by(handle) %>% summarise(Count=n(),Types=n_distinct(handle))
 
-adjlist <- strsplit(paste0(xx$handle,",",xx$user_mention_screen_names), ",")
+adjlist <- strsplit(paste0(sample$handle,",",sample$user_mention_screen_names), ",")
 edgelist <- cbind(
     unlist(lapply(adjlist, tail, -1L)),                        # col1
     rep(sapply(adjlist, `[`, 1L), times=lengths(adjlist)-1L)   # col2
