@@ -11,7 +11,7 @@ Open R Studio and run the following command to ensure you have all of the R libr
 ```{r}
 packages <- c("flexdashboard", "readr", "dplyr", "lubridate", "htmlwidgets", "htmltools",
               "KernSmooth", "sp", "devtools", "xts", "dygraphs", "reshape2", "visNetwork",
-              "igraph", "leaflet", "plotly", "highcharter")
+              "igraph", "leaflet", "plotly", "highcharter","d3heatmap")
 
 lapply(packages, install.packages(packages), character.only = TRUE)
 
